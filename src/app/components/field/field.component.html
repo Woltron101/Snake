@@ -1,0 +1,6 @@
+<input type="text" (keyup)="changeDirection($event)">
+<table>
+  <tr *ngFor="let row of rows; let rowIndex = index">
+    <td *ngFor="let cell of cells; let cellIndex = index" [ngClass]="{'red': drawPoint(cellIndex, rowIndex)}"></td>
+  </tr>
+</table>
