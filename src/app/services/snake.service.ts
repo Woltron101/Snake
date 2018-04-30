@@ -12,36 +12,44 @@ export class SnakeService {
 
   constructor() { 
     this.head = new Point(25, 25);
-    this.drawBody();
-    
+    this.drawBody();    
 
-    var subject = new ReplaySubject();
-    
+    var subject = new ReplaySubject();    
     var subscription = subject.subscribe(
-
       () => {
         this.body.pop()
         this.body.unshift({x: this.head.x, y: this.head.y});
         switch(this.direction) {
-          case 'left': this.head.x--; break
-          case 'right': this.head.x++; break
-          case 'top': this.head.y--; break  
-          case 'bottom': this.head.y++; break  
+          case 'left':
+            this.head.x - 1 === -1 ? this.head.x = 50 : this.head.x--;
+            this.gameOver();
+            break
+          case 'right': 
+            this.head.x + 1 === 50 ? this.head.x = 0 : this.head.x++;
+            this.gameOver(); 
+            break
+          case 'top': 
+            this.head.y - 1 === -1 ? this.head.y = 50 : this.head.y--;
+            this.gameOver();
+            break  
+          case 'bottom': 
+            this.head.y + 1 === 50 ? this.head.y = 0 : this.head.y++; 
+            this.gameOver();
+            break  
           default: console.error('direction error');
         } 
       },
       e => console.error(e),
       () => console.info("completed")
     );
+
     setInterval(
       () => subject.next(1),
-      1000
+      100
     )
 
     // subject.complete();
-
     // subscription.unsubscribe();
-
   }
 
   drawBody(){
@@ -61,6 +69,10 @@ export class SnakeService {
     }
   }
   
+  gameOver(){
+    this.body.some(point => point.x === this.head.x && point.y === this.head.y) ? alert('Game Over') : null;
+  }
+
   get snake() {
     return [this.head, ...this.body]
   }
