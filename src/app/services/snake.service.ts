@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Point } from '../point';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/Rx';
+import { FoodService } from './food.service'
 
 @Injectable()
 export class SnakeService {
@@ -10,7 +11,7 @@ export class SnakeService {
   private body:Point[]=[];
   private direction:string = 'top';
 
-  constructor() { 
+  constructor(private food:FoodService) { 
     this.head = new Point(25, 25);
     this.drawBody();    
 
@@ -23,18 +24,22 @@ export class SnakeService {
           case 'left':
             this.head.x - 1 === -1 ? this.head.x = 50 : this.head.x--;
             this.gameOver();
+            this.eatFood();
             break
           case 'right': 
             this.head.x + 1 === 50 ? this.head.x = 0 : this.head.x++;
-            this.gameOver(); 
+            this.gameOver();
+            this.eatFood(); 
             break
           case 'top': 
             this.head.y - 1 === -1 ? this.head.y = 50 : this.head.y--;
             this.gameOver();
+            this.eatFood();
             break  
           case 'bottom': 
             this.head.y + 1 === 50 ? this.head.y = 0 : this.head.y++; 
             this.gameOver();
+            this.eatFood();
             break  
           default: console.error('direction error');
         } 
@@ -45,7 +50,7 @@ export class SnakeService {
 
     setInterval(
       () => subject.next(1),
-      100
+      200
     )
 
     // subject.complete();
@@ -54,8 +59,7 @@ export class SnakeService {
 
   drawBody(){
     for (let i=0; i < this.length; i++) {
-      this.body[i] = new Point(this.head.x+i+1, this.head.y);
-      
+      this.body[i] = new Point(this.head.x+i+1, this.head.y);      
     }    
   }
 
@@ -72,7 +76,12 @@ export class SnakeService {
   gameOver(){
     this.body.some(point => point.x === this.head.x && point.y === this.head.y) ? alert('Game Over') : null;
   }
-
+  eatFood(){
+    if (this.head.x === this.food._food.x && this.head.y === this.food._food.y) {
+      this.body.push(null)
+      this.food.newFood()
+    }
+  }
   get snake() {
     return [this.head, ...this.body]
   }
