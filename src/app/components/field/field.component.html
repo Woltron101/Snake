@@ -1,14 +1,23 @@
 <div (window:keyup)="changeDirection($event.keyCode)" class="wrap">
-  <p>
-    <strong>Score:</strong> {{score}}  
-  </p>
+  <div class="buttons-wrap">
+      <p>
+        <strong>Score:</strong> {{score}}  
+      </p>
+      <button (click)="snake.start()">Start</button>
+      <button (click)="snake.pause()">Pause</button>
+  </div>
   <label for="speed"><strong>Speed:</strong>
-    <select name="speed" id="speed" #selectSpeed (change)="changeSpeed($event)" #someVar>
+    <select name="speed" id="speed" #selectSpeed (change)="changeSpeed($event)">
       <option [value]="item.val" *ngFor="let item of speed">{{item.opt}}</option>
     </select>
   </label>
-  <h2>Snake</h2>
-  <table>
+  <label for="speed"><strong>Field size:</strong>
+    <select name="speed" id="speed" #selectSpeed (change)="changeField($event)">
+      <option [value]="item.val" *ngFor="let item of fieldSize">{{item.opt}}</option>
+    </select>
+  </label>
+  <!-- <h2>Snake</h2> -->
+  <table align="center">
     <tr *ngFor="let row of rows; let rowIndex = index">
       <td *ngFor="let cell of cells; let cellIndex = index" [ngClass]="{'red': drawPoint(cellIndex, rowIndex)}"></td>
     </tr>

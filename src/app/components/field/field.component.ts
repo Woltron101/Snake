@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, HostListener, ElementRef } from '@angular
 import { Point } from '../../point';
 import { SnakeService } from '../../services/snake.service';
 import { FoodService } from '../../services/food.service';
+import { FieldSizeService } from '../../services/field-size.service';
 import * as _ from "lodash";
 
 // function _window() : any {  
@@ -17,18 +18,24 @@ import * as _ from "lodash";
 })
 
 export class FieldComponent {
-  private rows:any[] = Array(50);
-  private cells:any[] = Array(50);
+  private rows:any[] = Array(this.field.size);
+  private cells:any[] = Array(this.field.size);
   private score:number = this.snake.length - 10;
   private speed:Object[] = [
-    {val: 2000, opt : 1},
-    {val: 1500, opt : 2},
-    {val: 1000, opt : 3},
-    {val: 500, opt : 4},
-    {val: 100, opt : 5},
+    {val: 80, opt : 'Fast'},
+    {val: 400, opt : 'Normal'},
+    {val: 800, opt : 'Slow'},
   ]
-  
-  constructor(private snake:SnakeService, private food:FoodService) { 
+  private fieldSize:Object[] = [
+    {val: 50, opt : 'Big'},
+    {val: 40, opt : 'Medium'},
+    {val: 30, opt : 'Small'},
+  ]
+  constructor(
+    private snake:SnakeService, 
+    private food:FoodService, 
+    private field:FieldSizeService
+  ) { 
     snake.chnageScore.subscribe(()=>{ this.score = snake.length - 10 });
   }
 
@@ -42,5 +49,14 @@ export class FieldComponent {
 
   private changeDirection(key){
     this.snake.changeDirection(key);
+  }
+
+  private changeField(event):void {
+    let size = +event.target.value;
+    this.field.size = size;
+    this.rows = Array(size);
+    this.cells = Array(size);
+    this.snake.startNewGame();
+    this.food.newFood(this.snake.snake);
   }
 }

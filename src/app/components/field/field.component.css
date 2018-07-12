@@ -4,10 +4,7 @@ table {
 	border-spacing: 0;
 	border-collapse: collapse;
 	clear: both;
-	margin-top: 10px;
-	
-
-
+	margin-top: 10px auto 0;	
 }
 
 td {
@@ -32,6 +29,14 @@ p {
 }
 label {
 	float: right;
+	margin: 15px 0 15px 15px;
+}
+.buttons-wrap {
+	margin: 15px 0;
+	float: left;
+}
+button {
+	margin-left: 15px;
 }
 
 .wrap {

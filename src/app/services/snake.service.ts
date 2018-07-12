@@ -3,7 +3,7 @@ import { Point } from '../point';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/Rx';
 import { FoodService } from './food.service';
-
+import { FieldSizeService } from './field-size.service';
     
 @Injectable()
 export class SnakeService {
@@ -11,13 +11,13 @@ export class SnakeService {
   public length:number = 10;
   private body:Point[]=[];
   private direction:string = this.randomPosition();
-  public speed:number = 200;
+  public speed:number = 80;
   public interval;
   private subject;
   private subscription;
   public chnageScore: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private food:FoodService) {
+  constructor(private food:FoodService, private field:FieldSizeService) {
     this.startNewGame();
   }
 
@@ -27,8 +27,8 @@ export class SnakeService {
     return arr[numb];
   }
 
-  private startNewGame():void {
-    this.head = new Point();
+  public startNewGame():void {
+    this.head = new Point(this.field.size);
     this.body = [];
     this.drawBody();    
 
@@ -39,16 +39,16 @@ export class SnakeService {
       () => console.info("completed")
     );
 
-    this.interval = setInterval(() => this.subject.next(1), this.speed);
+    this.start();
   }
 
   private drawBody():void {
     for (let i=0; i < this.length; i++) {
       switch(this.direction) {
-        case "left": this.body[i] = new Point(this.head.x+i+1, this.head.y); break;
-        case "top": this.body[i] = new Point(this.head.x, this.head.y+i+1);break;
-        case "right": this.body[i] = new Point(this.head.x-i-1, this.head.y);break; 
-        case "bottom": this.body[i] = new Point(this.head.x, this.head.y-i-1);break; 
+        case "left": this.body[i] = new Point(this.field.size, this.head.x+i+1, this.head.y); break;
+        case "top": this.body[i] = new Point(this.field.size, this.head.x, this.head.y+i+1);break;
+        case "right": this.body[i] = new Point(this.field.size, this.head.x-i-1, this.head.y);break; 
+        case "bottom": this.body[i] = new Point(this.field.size, this.head.x, this.head.y-i-1);break; 
         default: console.error('drawSnake error');
       } 
     }    
@@ -68,22 +68,22 @@ export class SnakeService {
 
   private nextStep():void {
     this.body.pop();
-    this.body.unshift(new Point(this.head.x, this.head.y));
+    this.body.unshift(new Point(this.field.size, this.head.x, this.head.y));
     switch(this.direction) {
       case 'left':
-        this.head.x - 1 === -1 ? this.head.x = 49 : this.head.x--;
+        this.head.x - 1 === -1 ? this.head.x = this.field.size - 1: this.head.x--;
         this.checkNextStep();
         break
       case 'right': 
-        this.head.x + 1 === 50 ? this.head.x = 0 : this.head.x++;
+        this.head.x + 1 === this.field.size ? this.head.x = 0 : this.head.x++;
         this.checkNextStep(); 
         break
       case 'top': 
-        this.head.y - 1 === -1 ? this.head.y = 49 : this.head.y--;
+        this.head.y - 1 === -1 ? this.head.y = this.field.size - 1 : this.head.y--;
         this.checkNextStep();
         break  
       case 'bottom': 
-        this.head.y + 1 === 50 ? this.head.y = 0 : this.head.y++;
+        this.head.y + 1 === this.field.size ? this.head.y = 0 : this.head.y++;
         this.checkNextStep();            
         break  
       default: console.error('direction error');
@@ -99,9 +99,9 @@ export class SnakeService {
     let moveOnBody:boolean = this.body.some(point => point.x === this.head.x && point.y === this.head.y);
     if(moveOnBody){
       if(confirm('Game Over! Star tNew Game?')){
-        this.interval = clearInterval(this.interval);
-        this.startNewGame()
-      } else clearInterval(this.interval);
+        this.pause();
+        this.startNewGame();
+      } else this.pause();
     }
   }
 
@@ -113,10 +113,19 @@ export class SnakeService {
       this.food.newFood(this.snake);
     }
   }
+
   public changeSpeed(speed):void {
-    this.interval = clearInterval(this.interval)
+    this.pause();
     this.speed = speed;
-    this.interval = setInterval(() => this.subject.next(1), speed);
+    this.start();
+  }
+  public pause() {
+    this.interval = clearInterval(this.interval);
+  }
+  public start():void {
+    if(!this.interval){
+      this.interval = setInterval(() => this.subject.next(1), this.speed);
+    }    
   }
   public get snake():Point[] {
     return [this.head, ...this.body];
