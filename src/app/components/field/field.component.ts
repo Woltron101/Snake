@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {ElementRef} from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ElementRef } from '@angular/core';
 import { Point } from '../../point';
 import { SnakeService } from '../../services/snake.service';
 import { FoodService } from '../../services/food.service';
@@ -18,10 +17,9 @@ import * as _ from "lodash";
 })
 
 export class FieldComponent {
-  
   private rows:any[] = Array(50);
   private cells:any[] = Array(50);
-  private score:number = this.snake.length;
+  private score:number = this.snake.length - 10;
   private speed:Object[] = [
     {val: 2000, opt : 1},
     {val: 1500, opt : 2},
@@ -31,7 +29,7 @@ export class FieldComponent {
   ]
 
   constructor(private snake:SnakeService, private food:FoodService) { 
-    snake.chnageScore.subscribe(()=>{ this.score = snake.length });
+    snake.chnageScore.subscribe(()=>{ this.score = snake.length - 10 });
   }
 
   private drawPoint(x:number ,y:number):boolean {
