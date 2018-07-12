@@ -2,8 +2,12 @@ export class Point {
     public x:number;
     public y:number;
   
-    constructor(x, y){
-        this.x = x;
-        this.y = y;
+    constructor(x?:number, y?:number){
+        this.x = x >= 0 ? x : this.random();
+        this.y = y >= 0 ? y : this.random();
+    }
+
+    private random():number {
+        return Math.floor(Math.random() * 50);
     }
 }

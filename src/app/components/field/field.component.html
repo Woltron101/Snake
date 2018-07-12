@@ -1,6 +1,16 @@
-<input type="text" (keyup)="changeDirection($event)">
-<table>
-  <tr *ngFor="let row of rows; let rowIndex = index">
-    <td *ngFor="let cell of cells; let cellIndex = index" [ngClass]="{'red': drawPoint(cellIndex, rowIndex)}"></td>
-  </tr>
-</table>
+<div (window:keyup)="changeDirection($event.keyCode)" class="wrap">
+  <p>
+    <strong>Score:</strong> {{score}}  
+  </p>
+  <label for="speed"><strong>Speed:</strong>
+    <select name="speed" id="speed" #selectSpeed (change)="changeSpeed($event)" #someVar>
+      <option [value]="item.val" *ngFor="let item of speed">{{item.opt}}</option>
+    </select>
+  </label>
+  <h2>Snake</h2>
+  <table>
+    <tr *ngFor="let row of rows; let rowIndex = index">
+      <td *ngFor="let cell of cells; let cellIndex = index" [ngClass]="{'red': drawPoint(cellIndex, rowIndex)}"></td>
+    </tr>
+  </table>
+</div>

@@ -3,6 +3,9 @@ table {
 	background: #ddd;
 	border-spacing: 0;
 	border-collapse: collapse;
+	clear: both;
+	margin-top: 10px;
+	
 
 
 }
@@ -13,6 +16,25 @@ td {
 	width: 10px;
 	height: 10px;
 }
+
 .red {
     background-color:red;
+}
+
+h2 {
+	width: 60%;
+	margin: 0 auto;
+	text-align: center;
+}
+p {
+	float: left;
+	margin: 0;
+}
+label {
+	float: right;
+}
+
+.wrap {
+	width: 650px;
+	margin: 0 auto;
 }

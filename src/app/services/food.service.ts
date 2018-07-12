@@ -3,21 +3,15 @@ import { Point } from '../point';
 
 @Injectable()
 export class FoodService {
-  private size:number = 50;
-  private food:Point = new Point(this.getRandomn(), this.getRandomn())
-  constructor() { 
-
+  private food:Point = new Point();
+  constructor() { }  
+  newFood(snake){
+    this.food = new Point();
+    if(snake.some(point => point && point.x === this.food.x && point.y === this.food.y)) 
+      this.food = new Point();
   }
 
-  getRandomn() {
-    return Math.floor(Math.random() * (this.size - 0));
-  }
-
-  newFood(){
-    this.food = new Point(this.getRandomn(), this.getRandomn())
-  }
-
-  get _food(){
+  public get _food():Point {
     return this.food;
   }
 }
