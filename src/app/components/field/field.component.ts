@@ -27,7 +27,7 @@ export class FieldComponent {
     {val: 500, opt : 4},
     {val: 100, opt : 5},
   ]
-
+  
   constructor(private snake:SnakeService, private food:FoodService) { 
     snake.chnageScore.subscribe(()=>{ this.score = snake.length - 10 });
   }
